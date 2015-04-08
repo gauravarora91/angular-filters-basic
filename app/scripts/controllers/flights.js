@@ -11,7 +11,7 @@
 
 angular.module('ixigoTestApp')	
 
-  .controller('FlightsCtrl', function ($scope, $filter) {
+  .controller('FlightsCtrl', function ($scope) {
 
   	/*
   	 *	Bind Airlines Model with Checkboxes State (by adding an extra state attribute to array)
@@ -36,7 +36,7 @@ angular.module('ixigoTestApp')
   	$scope.airlineClass = airlineClass;
 
   	// Data Sheet has price as string, parsing it into Int so that we can sort the price in table
-  	flightsData = angular.forEach(flightsData, function(value, key) {		  	
+  	flightsData = angular.forEach(flightsData, function(value) {		  	
 		  	
     		value.price = parseInt(value.price);    		
 
@@ -48,22 +48,22 @@ angular.module('ixigoTestApp')
 
   	$scope.duration = function(land, takeoff){  		
 		return land-takeoff;
-  	}
+  	};
 
   	$scope.codeToName = function(code){    	
 		return airlineMap[code];
-  	}
+  	};
 
   	$scope.airportCodeToName = function(code){    	
 		return airportMap[code];
-  	}
+  	};
 
   	$scope.airlineToggle = function() {  		
 
   		var flightsDataFiltered = [];  		
 
   		// Check for active airlines states
-  		angular.forEach(airlines, function(value, key){			
+  		angular.forEach(airlines, function(value){			
 
   			if(value.state){
   				flightsDataFiltered = flightsDataFiltered.concat( $scope.airlineFilter(value.code) );
@@ -75,8 +75,9 @@ angular.module('ixigoTestApp')
   		flightsDataFiltered = $scope.classFilter( flightsDataFiltered );
 
   		// No Filter - No Result - Return All
-  		if(flightsDataFiltered.length == 0){  			
-  			return $scope.flightsData = flightsData;
+  		if(flightsDataFiltered.length === 0){  			
+  			$scope.flightsData = flightsData;
+  			return $scope.flightsData;
   		}
 
   		$scope.flightsData = flightsDataFiltered;
@@ -89,7 +90,7 @@ angular.module('ixigoTestApp')
 
     	var flightsDataFiltered = [];    	
 
-		angular.forEach(flightsData, function(value, key) {						
+		angular.forEach(flightsData, function(value) {						
 
 		  	if( value.airlineCode === code )
 		  	{
@@ -102,40 +103,42 @@ angular.module('ixigoTestApp')
 
 		return flightsDataFiltered;
 		
-	}
+	};
 
 
 	// Filter for Ticket Class
 	$scope.classFilter = function(data) {
 
 	  	// IF DATA SET IS EMPTY
-  		if(data.length == 0){  			
+  		if(data.length === 0){  			
   			 data = flightsData;
   		} 	
 
     	var flightsDataFiltered = [];   	
 
     	// Loop through to get all active Class Filters
-    	angular.forEach(airlineClass, function(airlineClassValue, airlineClassKey) {
-    		if( airlineClassValue.state == true )
+    	angular.forEach(airlineClass, function(airlineClassValue) {
+    		if( airlineClassValue.state === true ){
 
-				angular.forEach(data, function(value, key) {			
+				angular.forEach(data, function(value) {			
 						if( value.class === airlineClassValue.class )				
 							{
 								this.push(value);
 							}							
 				},flightsDataFiltered);
 
+			}
+
 		});
 
     	// No Class is selected / Return what we got
-		if(flightsDataFiltered.length == 0){
+		if(flightsDataFiltered.length === 0){
 			return data;
 		}
     	
 		return flightsDataFiltered;
 		
-	}
+	};
 
 
 
